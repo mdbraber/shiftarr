@@ -1,0 +1,37 @@
+# Example Shiftarr service — copy this `shiftarr` service into your own compose stack
+# (alongside Sonarr/Bazarr/Plex) and adjust volumes + env for your setup.
+#
+#   docker compose up -d --build shiftarr
+#
+# Then point a Sonarr webhook (On Import / On Upgrade) at http://shiftarr:8000/.
+
+services:
+  shiftarr:
+    build: .
+    # image: ghcr.io/mdbraber/shiftarr:latest   # or build locally with `build: .` above
+    container_name: shiftarr
+    restart: unless-stopped
+    ports:
+      - "8000:8000"                 # webhook listener (Sonarr POSTs here)
+    volumes:
+      - ./allowlist.txt:/app/allowlist.txt:ro   # edit host file; applies without a rebuild
+      - ./config:/config                        # log + learned cut map + Plex token cache
+      - /path/to/media/tv:/tv                   # same media Sonarr imports into; container path = /tv
+    environment:
+      # --- core sync knobs (all optional; defaults shown) ---
+      - SHIFTARR_SEG_MIN=10         # window length in minutes
+      - SHIFTARR_STEP_CAP=12        # max drift change per window (s)
+      - SHIFTARR_LEAD=0             # lead applied to drift-corrected segments (s); negative = earlier
+      - SHIFTARR_SNAP=0.3           # segments drifting less than this are left untouched (s)
+      - SHIFTARR_LANG=eng           # embedded subtitle language to prefer
+      - SHIFTARR_TAG=en             # sidecar suffix -> <base>.<TAG>.srt
+      - SHIFTARR_REFINE=0           # 1 = move each step to the true ad-break end
+      - SHIFTARR_LOG=/config/shiftarr.log
+      - SHIFTARR_ALLOWLIST=/app/allowlist.txt
+
+      # --- optional Plex auto-select (leave unset to disable entirely) ---
+      # - PLEX_URL=https://plex.example.org     # or http://plex:32400
+      # - PLEX_TOKEN=your-admin-x-plex-token
+      # - PLEX_ACCOUNTS=user1,user2             # Plex Home usernames, or * for all; empty = admin only
+      # - PLEX_VERIFY_SSL=1                      # 0 to skip TLS verify (self-signed cert)
+      # - PLEX_TIMEOUT=60

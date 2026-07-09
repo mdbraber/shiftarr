@@ -1,0 +1,5 @@
+# Shiftarr allowlist — one substring per line.
+# A video is processed only if its path contains one of these lines.
+# Lines starting with '#' and blank lines are ignored. Edits apply on the next run
+# (no rebuild) as long as this file is mounted into the container.
+Taskmaster

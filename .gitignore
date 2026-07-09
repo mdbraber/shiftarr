@@ -1,0 +1,12 @@
+# Local Claude Code config (contains machine-specific paths + secrets)
+.claude/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Runtime artifacts (mounted at /config in the container)
+config/
+*.log
+.shiftarr_cuts.json
+.plex_select_tokens.json
