@@ -3,7 +3,7 @@
 Automatically re-times a video's **embedded** English subtitle to its audio and writes an
 external `<episode>.en.srt` sidecar next to the file. Built for broadcast shows ripped as
 WEB-DL where ad breaks have been cut out, so the broadcast subtitle **drifts** progressively
-later through the episode (e.g. Taskmaster: 0s at the start → ~9s late by the end).
+later through the episode.
 
 Plain global sync (ffsubsync/alass "one offset") and audio-only tools fail on this content
 because the drift is piecewise and the studio applause/laughter defeats voice-activity
@@ -228,14 +228,6 @@ import time (Sonarr → *Connect → Plex Media Server* does this); shiftarr pol
 docker exec shiftarr bash -lc 'find "/tv/Taskmaster" -name "*.mkv" | sort | \
   while IFS= read -r f; do python /app/shiftarr.py --plex-only "$f"; done'
 ```
-
----
-
-## Known limitation
-
-The **finale** (winner announcement / applause / credits) can overshoot by ~1–2 s: dense applause
-biases ffsubsync and there's little clean dialogue to anchor on. It's confined to the last minutes
-and is far smaller than the original 4–9 s drift.
 
 ---
 
